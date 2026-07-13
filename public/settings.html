@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="page-header">
+        <h1>Settings</h1>
+        <p>Manage your profile and notification preferences.</p>
+      </header>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <p>You haven't set up your profile yet. Add your name and email below to get started.</p>
+      </div>
+
+      <div id="load-error" class="alert alert-error" hidden role="alert">
+        <p>Could not load your settings. Please refresh the page or try again later.</p>
+      </div>
+
+      <form id="settings-form" class="settings-form" novalidate hidden>
+        <section class="form-section">
+          <h2>Profile</h2>
+
+          <div class="field">
+            <label for="displayName">Profile name</label>
+            <input
+              type="text"
+              id="displayName"
+              name="displayName"
+              placeholder="Your name"
+              autocomplete="name"
+              minlength="2"
+              required
+            />
+            <span class="error" data-for="displayName"></span>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            />
+            <span class="error" data-for="email"></span>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Notifications</h2>
+
+          <div class="field field-toggle">
+            <label class="toggle-label" for="emailNotifications">
+              <span class="toggle-text">
+                <span class="toggle-title">Email notifications</span>
+                <span class="toggle-description">Receive updates and alerts by email</span>
+              </span>
+              <input
+                type="checkbox"
+                id="emailNotifications"
+                name="emailNotifications"
+                class="toggle-input"
+                role="switch"
+                aria-checked="false"
+              />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save settings</button>
+        </div>
+
+        <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+      </form>
+
+      <p id="loading-state" class="loading-state">Loading settings…</p>
+    </main>
+
+    <script src="settings.js"></script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "capstone-project",
+  "version": "1.0.0",
+  "description": "Capstone project for the AI Fluency track (FE-01)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/**/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
