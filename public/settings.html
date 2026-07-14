@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — capstone-project</title>
+<style>
+  :root {
+    --bg: #12181f;
+    --panel: #1a222c;
+    --panel-line: #2a3544;
+    --text: #e8ecf1;
+    --text-dim: #8a96a5;
+    --accent: #e0a63c;
+    --accent-dim: #7a5f27;
+    --danger: #d9694f;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 48px 20px;
+  }
+
+  .window {
+    width: 100%;
+    max-width: 640px;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #0e1319;
+    border-bottom: 1px solid var(--panel-line);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #e0605080; }
+  .dot.y { background: #e0a63c80; }
+  .dot.g { background: #4fae7a80; }
+
+  .filename {
+    margin-left: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .body-inner { padding: 32px 32px 8px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-size: 22px;
+    margin: 0 0 28px;
+    font-weight: 600;
+  }
+
+  .section {
+    border-top: 1px solid var(--panel-line);
+    padding: 22px 0;
+  }
+  .section:first-of-type { border-top: none; padding-top: 0; }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0 0 16px;
+  }
+
+  .field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+  }
+
+  .field-label { font-size: 14px; }
+  .field-hint { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  input[type="text"], input[type="email"], select {
+    background: #0e1319;
+    border: 1px solid var(--panel-line);
+    color: var(--text);
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: var(--mono);
+    width: 220px;
+    outline: none;
+  }
+  input[type="text"]:focus, input[type="email"]:focus, select:focus {
+    border-color: var(--accent);
+  }
+
+  /* Toggle switch */
+  .switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--panel-line);
+    border-radius: 999px;
+    transition: 0.15s;
+  }
+  .slider::before {
+    content: "";
+    position: absolute;
+    height: 16px; width: 16px;
+    left: 3px; bottom: 3px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    transition: 0.15s;
+  }
+  .switch input:checked + .slider { background: var(--accent-dim); }
+  .switch input:checked + .slider::before { transform: translateX(18px); background: var(--accent); }
+  .switch input:focus-visible + .slider { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Theme radio pills */
+  .pill-group { display: flex; gap: 8px; }
+  .pill {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+  }
+  .pill input { display: none; }
+  .pill.active { border-color: var(--accent); color: var(--accent); background: rgba(224,166,60,0.08); }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-top: 1px solid var(--panel-line);
+    background: #0e1319;
+  }
+
+  .status {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    min-height: 16px;
+  }
+  .status.saved { color: #4fae7a; }
+
+  button.save {
+    background: var(--accent);
+    color: #12181f;
+    border: none;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button.save:hover { filter: brightness(1.08); }
+  button.save:active { transform: translateY(1px); }
+  button.save:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+  @media (max-width: 480px) {
+    .field { flex-direction: column; align-items: flex-start; gap: 8px; }
+    input[type="text"], input[type="email"], select { width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="window">
+  <div class="titlebar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="filename">settings.config</span>
+  </div>
+
+  <div class="body-inner">
+    <p class="eyebrow">capstone-project</p>
+    <h1>Settings</h1>
+
+    <div class="section">
+      <p class="section-title">// profile</p>
+      <div class="field">
+        <div>
+          <div class="field-label">Display name</div>
+        </div>
+        <input type="text" id="displayName" value="Zoya" />
+      </div>
+      <div class="field">
+        <div class="field-label">Email</div>
+        <input type="email" id="email" value="zoya@example.com" />
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">// appearance</p>
+      <div class="field">
+        <div class="field-label">Theme</div>
+        <div class="pill-group" id="themeGroup">
+          <label class="pill active" data-value="dark">
+            <input type="radio" name="theme" value="dark" checked> Dark
+          </label>
+          <label class="pill" data-value="light">
+            <input type="radio" name="theme" value="light"> Light
+          </label>
+          <label class="pill" data-value="system">
+            <input type="radio" name="theme" value="system"> System
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <div>
+          <div class="field-label">Compact layout</div>
+          <div class="field-hint">Reduce spacing across the app</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="compact">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">// notifications</p>
+      <div class="field">
+        <div>
+          <div class="field-label">Email notifications</div>
+          <div class="field-hint">Updates on commits and reviews</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="emailNotif" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="field">
+        <div>
+          <div class="field-label">Desktop alerts</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="desktopNotif">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">// toolchain</p>
+      <div class="field">
+        <div class="field-label">Default editor</div>
+        <select id="editor">
+          <option>Cursor</option>
+          <option>VS Code</option>
+          <option>Neovim</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-label">Commit style</div>
+        <select id="commitStyle">
+          <option>Conventional Commits</option>
+          <option>Freeform</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="status" id="status"></span>
+    <button class="save" id="saveBtn">Save changes</button>
+  </div>
+</div>
+
+<script>
+  // In-memory settings store. Swap this out for a real API/file call
+  // (e.g. POST /api/settings) when the backend exists.
+  let settings = {
+    displayName: 'Zoya',
+    email: 'zoya@example.com',
+    theme: 'dark',
+    compact: false,
+    emailNotif: true,
+    desktopNotif: false,
+    editor: 'Cursor',
+    commitStyle: 'Conventional Commits'
+  };
+
+  const themeGroup = document.getElementById('themeGroup');
+  themeGroup.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      themeGroup.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+    });
+  });
+
+  const statusEl = document.getElementById('status');
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    settings = {
+      displayName: document.getElementById('displayName').value,
+      email: document.getElementById('email').value,
+      theme: themeGroup.querySelector('input:checked').value,
+      compact: document.getElementById('compact').checked,
+      emailNotif: document.getElementById('emailNotif').checked,
+      desktopNotif: document.getElementById('desktopNotif').checked,
+      editor: document.getElementById('editor').value,
+      commitStyle: document.getElementById('commitStyle').value
+    };
+
+    statusEl.textContent = 'Saved just now';
+    statusEl.classList.add('saved');
+    console.log('Settings saved:', settings);
+
+    setTimeout(() => {
+      statusEl.textContent = '';
+      statusEl.classList.remove('saved');
+    }, 2500);
+  });
+</script>
+
+</body>
+</html>
